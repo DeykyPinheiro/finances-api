@@ -32,7 +32,7 @@ class UserRepositoryTest {
 
 
     @Test
-    void mustReturnValidUserId_WhenToCreateValidUser() {
+    void shouldReturnValidUserId_WhenToCreateValidUser() {
         Date date = new Date();
         Long userId = newUser("Deyky", "123456", date).getId();
 
