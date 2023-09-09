@@ -9,6 +9,7 @@ import java.util.Date;
 
 public record UserSaveDto(
 
+
         @NotBlank
         String name,
 
@@ -16,8 +17,11 @@ public record UserSaveDto(
         String password,
 
         @Email
+        @NotBlank
         String email,
 
+        @DateTimeFormat
+        @NotNull
         Date birthDate
 ) {
 

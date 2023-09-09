@@ -1,6 +1,7 @@
 package com.finances.domain.model;
 
 import com.finances.domain.dto.user.UserSaveDto;
+import com.finances.domain.dto.user.UserUpdateDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +49,12 @@ public class User {
     public User(UserSaveDto userDto) {
         this.name = userDto.name();
         this.password = userDto.password();
+        this.email = userDto.email();
+        this.birthDate = userDto.birthDate();
+    }
+
+    public User(UserUpdateDto userDto) {
+        this.name = userDto.name();
         this.email = userDto.email();
         this.birthDate = userDto.birthDate();
     }
