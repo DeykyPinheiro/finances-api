@@ -6,10 +6,12 @@ import com.finances.domain.dto.user.UserDto;
 import com.finances.domain.dto.user.UserListDto;
 import com.finances.domain.dto.user.UserSaveDto;
 import com.finances.domain.dto.user.UserUpdateDto;
+import com.finances.domain.exception.BusinessException;
 import com.finances.domain.exception.UserNotFoundException;
 import com.finances.domain.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.aggregator.ArgumentAccessException;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -34,7 +36,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 
 @WebMvcTest(UserController.class)
@@ -118,11 +119,9 @@ class UserControllerTest {
         Date date = new Date();
         UserSaveDto userSavedto = new UserSaveDto(null, "", "teste@test.com", date);
 
-
         ResultActions resultActions = mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userSavedto)));
-
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), resultActions.andReturn().getResponse().getStatus());
     }
@@ -181,10 +180,13 @@ class UserControllerTest {
 
     @Test
     void shouldReturnUserNotFoundException_WhenQueryUserNonexistent() throws Exception {
+//        .andExpect
+
         Long userId = 1L;
         Mockito.when(userService.findById(userId)).thenThrow(new UserNotFoundException(userId));
 
-        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{userId}", userId));
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL + "/{userId}", userId))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException));
         String jsonResponse = resultActions.andReturn().getResponse().getContentAsString();
 
         Assertions.assertEquals(String.format(String.format("Não existe um cadastro de usuario com código %d", userId)),

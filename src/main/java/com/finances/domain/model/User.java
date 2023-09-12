@@ -58,4 +58,16 @@ public class User {
         this.email = userDto.email();
         this.birthDate = userDto.birthDate();
     }
+
+    public User(long userId) {
+        this.id = userId;
+    }
+
+    public User(long userId, String name, String password, String email, Date birthDate) {
+        this.id = userId;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.birthDate = birthDate;
+    }
 }
