@@ -7,6 +7,8 @@ import com.finances.domain.dto.user.UserUpdateDto;
 import com.finances.domain.exception.UserNotFoundException;
 import com.finances.domain.model.User;
 import com.finances.domain.repository.UserRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.mapping.UnionSubclass;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +25,17 @@ public class UserService {
 
     private UserRepository userRepository;
 
-    @Autowired
+
     private ModelMapper modelMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Transactional
-    public UserDto save(UserSaveDto userDto) {
+    public UserDto save(@NotNull @Valid UserSaveDto userDto) {
         User user = new User(userDto);
         user = userRepository.save(user);
         return new UserDto(user);
@@ -44,24 +47,25 @@ public class UserService {
         return pageUserListDto;
     }
 
-    public UserDto findById(long userId) {
-        User user = userRepository.findById(userId).
-                orElseThrow(() -> new UserNotFoundException(userId));
+    public UserDto findById(@NotNull long userId) {
+        User user = this.findById(new User(userId));
         return new UserDto(user);
     }
 
+    public User findById(@Valid @NotNull User user) {
+        return userRepository.findById(user.getId()).
+                orElseThrow(() -> new UserNotFoundException(user.getId()));
+    }
 
     @Transactional
-    public void delete(Long userId) {
-        User user = userRepository.findById(userId).
-                orElseThrow(() -> new UserNotFoundException(userId));
+    public void delete(@NotNull Long userId) {
+        User user = findById(new User(userId));
         userRepository.delete(user);
     }
 
     @Transactional
-    public UserDto update(Long userId, UserUpdateDto userDto) {
-        User user = userRepository.findById(userId).
-                orElseThrow(() -> new UserNotFoundException(userId));
+    public UserDto update(@NotNull Long userId, @Valid @NotNull UserUpdateDto userDto) {
+        User user = findById(new User(userId));
         User userUpdates = new User(userDto);
 
         modelMapper.map(userUpdates, user);
