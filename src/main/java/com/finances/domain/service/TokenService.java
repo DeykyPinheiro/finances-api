@@ -3,6 +3,7 @@ package com.finances.domain.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.finances.domain.dto.token.TokenDto;
 import com.finances.domain.model.User;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,11 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-//    TODO
+    //    TODO
 //    should configure rsa
 //    should customize token
+//    configure Public Key on decode JWT
     public TokenDto tokenGenerator(User user) {
-
         try {
             Algorithm algorithm = Algorithm.HMAC256("123456");
             String jwt = JWT.create()
@@ -31,7 +32,18 @@ public class TokenService {
         } catch (JWTCreationException exception) {
             throw new RuntimeException("teste");
         }
+    }
 
-
+    public String validateToken(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256("123456");
+            return JWT.require(algorithm)
+                    .withIssuer("quem é o auth server")
+                    .build()
+                    .verify(token).
+                    getSubject();
+        } catch (JWTVerificationException exception) {
+            throw new RuntimeException("Invalido ou Expirado");
+        }
     }
 }

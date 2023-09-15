@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 
-@RequestMapping("/login")
+@RequestMapping("/auth")
 public class AuthenticationController {
 
     private AuthenticationService authenticationService;
@@ -25,7 +25,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    @PostMapping
+    @PostMapping("/login")
     public TokenDto login(@RequestBody @Valid AuthenticationDto authenticationDto) {
         return authenticationService.login(authenticationDto);
     }

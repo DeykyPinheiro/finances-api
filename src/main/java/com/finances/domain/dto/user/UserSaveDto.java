@@ -20,6 +20,7 @@ public record UserSaveDto(
         @NotBlank
         String email,
 
+//        TODO thow exception validation fo date
         @DateTimeFormat
         @NotNull
         Date birthDate
