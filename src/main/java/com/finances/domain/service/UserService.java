@@ -34,6 +34,8 @@ public class UserService {
         this.modelMapper = modelMapper;
     }
 
+//    TODO
+//    add negotiation rule of not including duplicate and by an encrypted password
     @Transactional
     public UserDto save(@NotNull @Valid UserSaveDto userDto) {
         User user = new User(userDto);

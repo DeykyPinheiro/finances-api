@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 
 // TODO
 // configure properties
+// create keystore
 //@Validated
 //@Component
 //@Getter
