@@ -37,7 +37,7 @@ public class User implements UserDetails {
     private Date birthDate;
 
 
-    @OneToMany
+    @OneToMany(mappedBy = "ownerAccount")
     private Set<Account> lisAccounts = new HashSet<>();
 
     @CreationTimestamp

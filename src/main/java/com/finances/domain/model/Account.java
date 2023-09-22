@@ -24,12 +24,13 @@ public class Account {
     private Long id;
 
     @ManyToOne
-    User user;
-
+    @JoinColumn(name = "user_id")
+    User ownerAccount;
 
     @Enumerated(EnumType.STRING)
     private Bank bank;
 
+    @OneToMany(mappedBy = "ownerTransaction")
     List<Transaction> transactionList = new ArrayList<>();
 
     @CreationTimestamp

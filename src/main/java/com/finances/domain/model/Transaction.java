@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.OffsetDateTime;
 
@@ -15,19 +16,21 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
-@Table(name = "movement")
+@Table(name = "transaction")
 public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Account account;
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account ownerTransaction;
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
-    private BigInteger amount;
+    private BigDecimal amount;
 
     private String description;
 
