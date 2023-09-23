@@ -27,8 +27,7 @@ public class Account {
     @JoinColumn(name = "user_id")
     User ownerAccount;
 
-    @Enumerated(EnumType.STRING)
-    private Bank bank;
+    private String bank;
 
     @OneToMany(mappedBy = "ownerTransaction")
     List<Transaction> transactionList = new ArrayList<>();
