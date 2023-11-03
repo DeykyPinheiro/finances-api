@@ -45,7 +45,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp(){
-        userService = new UserService(userRepository, modelMapper);
+        userService = new UserService(userRepository, modelMapper, null);
     }
 
 

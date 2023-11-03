@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Cryptographic Keys ###
+src/main/resources/keys

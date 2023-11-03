@@ -3,6 +3,7 @@ package com.finances.common.secutiry.resourceserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,7 +21,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableWebSecurity
 public class ResourceServerConfig {
 
-    private  SecurityFilter securityFilter;
+    private SecurityFilter securityFilter;
 
     @Autowired
     public ResourceServerConfig(SecurityFilter securityFilter) {
@@ -34,9 +35,10 @@ public class ResourceServerConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(antMatcher("/auth/**")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.POST, "/users/**")).permitAll()
                         .anyRequest().authenticated()
                 )
-           .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

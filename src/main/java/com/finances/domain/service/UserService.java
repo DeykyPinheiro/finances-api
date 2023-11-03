@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,17 +29,22 @@ public class UserService {
 
     private ModelMapper modelMapper;
 
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
-    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
-//    TODO
+    //    TODO
 //    add negotiation rule of not including duplicate and by an encrypted password
     @Transactional
     public UserDto save(@NotNull @Valid UserSaveDto userDto) {
         User user = new User(userDto);
+        String encondedPassword = passwordEncoder.encode(userDto.password());
+        user.setPassword(encondedPassword);
         user = userRepository.save(user);
         return new UserDto(user);
     }
