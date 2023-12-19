@@ -9,26 +9,32 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.MalformedParameterizedTypeException;
+import java.security.*;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.HashMap;
+import java.util.Map;
 
-// TODO
-// configure properties
-// create keystore
-//@Validated
-//@Component
-//@Getter
-//@Setter
-//@ConfigurationProperties("finance.jwt.keystore")
-//public class JwtKeyStoreProperties {
-//
-//
-//    @NotBlank
-//    private String password;
-//
-//    @NotBlank
-//    private String keypairAlias;
-//
-//    @NotNull
-//    private Resource jksLocation;
-//
-//
-//}
+
+@Validated
+@Component
+@Getter
+@Setter
+@ConfigurationProperties("finances.jwt.keystore")
+public class JwtKeyStoreProperties {
+
+    @NotBlank
+    private String password;
+
+    @NotBlank
+    private String keypairAlias;
+
+    @NotNull
+    private Resource jksLocation;
+}
+

@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -33,6 +35,10 @@ public class User implements UserDetails {
     private String password;
 
     private Date birthDate;
+
+
+    @OneToMany(mappedBy = "ownerAccount")
+    private Set<Account> lisAccounts = new HashSet<>();
 
     @CreationTimestamp
     private OffsetDateTime creationDate;
@@ -72,7 +78,7 @@ public class User implements UserDetails {
         this.birthDate = birthDate;
     }
 
-//    TODO
+    //    TODO
 //    implements groups and permissions
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

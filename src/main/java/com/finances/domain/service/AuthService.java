@@ -10,14 +10,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticationService {
+public class AuthService {
 
     private AuthenticationManager authenticationManager;
 
     private TokenService tokenService;
 
     @Autowired
-    public AuthenticationService(AuthenticationManager authenticationManager, TokenService tokenService) {
+    public AuthService(AuthenticationManager authenticationManager, TokenService tokenService) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
     }
@@ -30,6 +30,7 @@ public class AuthenticationService {
         User user = (User) authentication.getPrincipal();
 
         return tokenService.tokenGenerator(user);
+//        return null;
     }
 
 
