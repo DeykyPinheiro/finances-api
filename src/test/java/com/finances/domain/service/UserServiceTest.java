@@ -10,10 +10,14 @@ import com.finances.domain.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.matchers.Any;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -40,13 +45,16 @@ class UserServiceTest {
     private UserRepository userRepository;
 
 
-    @Autowired
+    @Mock
     private ModelMapper modelMapper;
 
-    @BeforeEach
-    void setUp(){
-        userService = new UserService(userRepository, modelMapper, null);
-    }
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+//    @BeforeEach
+//    void setUp() {
+//        userService = new UserService(userRepository, modelMapper, passwordEncoder);
+//    }
 
 
     @Test
@@ -197,18 +205,57 @@ class UserServiceTest {
     }
 
 
+//    @Test
+//    void shouldReturnUserDto_WhenUpdateCorrectly() {
+//        Long userId = 1L;
+//        Date date = new Date();
+//
+//        User user = new User(userId, "Deyky", "123456", "deyky@teste.com", date);
+//        UserUpdateDto userUpdateDto = new UserUpdateDto("janbrolhando", "janbrolhando@teste.com", date);
+//        User userMapperRespose = new User(userUpdateDto);
+//        UserDto userExpected = new UserDto(userId, "janbrolhando", "janbrolhando@teste.com", date);
+//
+//        Mockito.doReturn(userMapperRespose).when(modelMapper).map(new User(userUpdateDto), user);
+//        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+//        Mockito.doNothing().when(modelMapper).map(new User(userUpdateDto), user);
+//
+//        UserDto userResponseDto = userService.update(userId, userUpdateDto);
+//
+//        Assertions.assertEquals(userExpected, userResponseDto);
+//        Mockito.verify(modelMapper).map(new User(userUpdateDto), user);
+//    }
+
     @Test
     void shouldReturnUserDto_WhenUpdateCorrectly() {
-        Long userId = 1L;
+//        cenario
+        final long userId = 1L;
         Date date = new Date();
+
         User user = new User(userId, "Deyky", "123456", "deyky@teste.com", date);
         UserUpdateDto userUpdateDto = new UserUpdateDto("janbrolhando", "janbrolhando@teste.com", date);
+        User userMapperRespose = new User(1L, "janbrolhando", "123456", "janbrolhando@teste.com", date);
         UserDto userExpected = new UserDto(userId, "janbrolhando", "janbrolhando@teste.com", date);
+
         Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
+        Mockito.doAnswer(invocation -> {
+            Object[] args = invocation.getArguments();
+            Object source = args[0];
+            Object destination = args[1];
+
+            ((User) destination).setName(((User) source).getName());
+            ((User) destination).setEmail(((User) source).getEmail());
+            ((User) destination).setBirthDate(((User) source).getBirthDate());
+
+            return null;
+        }).when(modelMapper).map(Mockito.any(User.class), Mockito.any(User.class));
+
+//        teste
         UserDto userResponseDto = userService.update(userId, userUpdateDto);
 
+//        asserção
         Assertions.assertEquals(userExpected, userResponseDto);
+        Mockito.verify(modelMapper).map(new User(userUpdateDto), user);
     }
 
     @Test

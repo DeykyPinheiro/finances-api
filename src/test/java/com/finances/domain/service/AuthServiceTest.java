@@ -2,21 +2,16 @@ package com.finances.domain.service;
 
 import com.finances.domain.dto.authentication.AuthenticationDto;
 import com.finances.domain.dto.token.TokenDto;
-import com.finances.domain.exception.UserNotFoundException;
 import com.finances.domain.model.User;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -25,14 +20,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
-class AuthenticationServiceTest {
+class AuthServiceTest {
 
 
     @InjectMocks
-    private AuthenticationService authenticationService;
+    private AuthService authService;
 
     @Mock
     private AuthenticationManager authenticationManager;
@@ -40,10 +33,10 @@ class AuthenticationServiceTest {
     @Mock
     private TokenService tokenService;
 
-    @BeforeEach
-    void setUp(){
-        authenticationService = new AuthenticationService(authenticationManager, tokenService);
-    }
+//    @BeforeEach
+//    void setUp() {
+//        authService = new AuthService(authenticationManager, tokenService);
+//    }
 
 
     @Test
@@ -55,9 +48,10 @@ class AuthenticationServiceTest {
 
         Mockito.when(authenticationManager.authenticate(credentials)).thenReturn(authentication);
         Mockito.when(authentication.getPrincipal()).thenReturn(user());
-        Mockito.when(tokenService.tokenGenerator(user())).thenReturn(tokenDto());
+        Mockito.when(tokenService.tokenGenerator(Mockito.any())).thenReturn(new TokenDto("1", "12", new Date().toInstant()));
+//        Mockito.when(tokenService.tokenGenerator(user())).thenReturn(tokenDto());
 
-        TokenDto tokenDto = authenticationService.login(authenticationDto);
+        TokenDto tokenDto = authService.login(authenticationDto);
 
         Assertions.assertNotNull(tokenDto);
         tokenDto.tokenType();
@@ -73,7 +67,7 @@ class AuthenticationServiceTest {
 
         UsernameNotFoundException error =
                 Assertions.assertThrows(UsernameNotFoundException.class, () -> {
-                    authenticationService.login(authenticationDto);
+                    authService.login(authenticationDto);
                 });
 
         Assertions.assertTrue(error instanceof UsernameNotFoundException);
